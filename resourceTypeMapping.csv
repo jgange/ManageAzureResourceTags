@@ -1,0 +1,16 @@
+﻿resourceType,objectType
+Microsoft.Web/serverFarms,App Service plan
+Microsoft.OperationsManagement/solutions,Solution
+Microsoft.AppConfiguration/configurationStores,App Configuration
+Microsoft.ContainerRegistry/registries,Container registry
+microsoft.insights/components,Application Insights
+Microsoft.ContainerService/managedClusters,Kubernetes service
+Microsoft.DocumentDb/databaseAccounts,Azure Cosmos DB account
+microsoft.insights/components,Function App
+Microsoft.Web/sites,Application Insights
+Microsoft.KeyVault/vaults,Key vault
+Microsoft.Web/sites,Logic App (Standard)
+Microsoft.OperationalInsights/workspaces,Log Analytics workspace
+Microsoft.Cache/Redis,Azure Cache for Redis
+Microsoft.Storage/storageAccounts,Storage account
+Microsoft.ServiceBus/namespaces,Service Bus Namespace
