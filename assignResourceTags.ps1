@@ -28,7 +28,7 @@ param (
     $masterResourceTagFile = "https://raw.githubusercontent.com/tfitzmac/resource-capabilities/master/tag-support.csv",
 
     [string]
-    $resourceMapFileName  = ($env:USERNAME,"Projects\PowerShell\ManageAzureResourceTags\AZResourceList.csv" -join "\)
+    $resourceMapFileName  = "c:\users\jgange\Projects\PowerShell\ManageAzureResourceTags\AZResourceList.csv"
 )
 
 $resourceList = [System.Collections.ArrayList]@()
@@ -38,7 +38,8 @@ $objectTypes = [ordered]@{}
 
 function getResourceTypeMappings([string] $resourceMapFileName)
 {
-    # stub
+    Import-Csv $resourceMapFileName
+
 }
 function generateTaggableResourceList([string] $masterResourceTagFile)
 {
