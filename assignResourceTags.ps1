@@ -60,18 +60,23 @@ function returnResourceList ([string] $subscriptionName, [string]$resourceGroupN
 function assignTags($resource)
 {  
 
+    # -match "^creat.*Date"
+
+    if ($resource.Properties.creationDate) { $creationDate = $resource.Properties.creationDate }
+    if ($resource.Properties.createdDate) { $creationDate = $resource.Properties.createdDate }
+
     $tags = [ordered]@{
-        "Name"         = $resource.Name
-        "Project"      = $projectName
-        "Environment"  = $environment
-        "ObjectType"   = $resourceObjectMap[($resource.ResourceType, $resource.kind -join "/")]   
-        "Owner"        = $projectOwner
-        "Contact"      = $primaryContact
-        "Region"       = $resource.Location
-        "Department"   = $department
-        "Created By"   = $createdBy
-        "ResourceType" = $resource.ResourceType
-        "Creation Date" = $resource.Properties.creationDate
+        "Name"         =  $resource.Name
+        "Project"      =  $projectName
+        "Environment"  =  $environment
+        "ObjectType"   =  $resourceObjectMap[($resource.ResourceType, $resource.kind -join "/")]   
+        "Owner"        =  $projectOwner
+        "Contact"      =  $primaryContact
+        "Region"       =  $resource.Location
+        "Department"   =  $department
+        "Created By"   =  $createdBy
+        "ResourceType" =  $resource.ResourceType
+        "Creation Date" = $creationDate
     }
 
     $tags.GetEnumerator() | Format-Table -HideTableHeaders | out-file -FilePath "c:\users\jgange\Projects\PowerShell\ManageAzureResourceTags\taglist.txt" -Append
