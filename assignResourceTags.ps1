@@ -4,7 +4,7 @@ param (
     $projectName           = "Peak on Demand",
     
     [string]
-    $environment           = "Production",
+    $environment           = "Development",
 
     [string]
     $projectOwner          = "andy.melichar@ascentgl.com",
@@ -19,27 +19,29 @@ param (
     $createdBy             = "SRE",
 
     [string]
-    $subscriptionName      = 'Pod-Dev',
+    $subscriptionName      = "Pod-Dev",
 
     [string]
-    $resourceGroupName     = 'd-pod-rg',
+    $resourceGroupName     = "d-pod-rg",
 
     [string]
     $masterResourceTagFile = "https://raw.githubusercontent.com/tfitzmac/resource-capabilities/master/tag-support.csv",
 
     [string]
-    $resourceMapFileName  = "c:\users\jgange\Projects\PowerShell\ManageAzureResourceTags\AZResourceList.csv"
+    $resourceMapFileName  = "c:\users\jgange\Projects\PowerShell\ManageAzureResourceTags\resourceTypeMapping.csv"
 )
 
-$resourceList = [System.Collections.ArrayList]@()
-$tempFile = $ENV:USERPROFILE,"tempFile.csv" -join "\"
+$resourceList      = [System.Collections.ArrayList]@()
+$tempFile          = $ENV:USERPROFILE,"tempFile.csv" -join "\"
+$resourceObjectMap = [ordered]@{}
 
-$objectTypes = [ordered]@{}
+#$objectTypes = [ordered]@{}
 
 function getResourceTypeMappings([string] $resourceMapFileName)
 {
-    Import-Csv $resourceMapFileName
-
+    Import-Csv $resourceMapFileName | ForEach-Object {
+        $resourceObjectMap.Add($_.resourceType,$_.objectType)
+    }
 }
 function generateTaggableResourceList([string] $masterResourceTagFile)
 {
@@ -49,34 +51,32 @@ function generateTaggableResourceList([string] $masterResourceTagFile)
 function returnResourceList ([string] $subscriptionName, [string]$resourceGroupName)
 {
     $null = Set-AzContext -Subscription $subscriptionName
-    Get-AzResource -ResourceGroupName $resourceGroupName
-
+    # $list = (Get-AzResource -ResourceGroupName $resourceGroupName).Name
+    # $list | ForEach-Object { Get-AzResource -Name $_ -ExpandProperties | Select-Object -Property * }
+    (Get-AzResource -ResourceGroupName $resourceGroupName).Name | ForEach-Object { Get-AzResource -Name $_ -ExpandProperties | Select-Object -Property * }
+    
 }
 
 function assignTags($resource)
 {  
 
-    #check if the resource supports tags
-    $resource
-
-    # Write-Host "Getting ready to tag Resource with Id $resource.$resourceId.Value"
-
-    # get resource type from calling get-AzResource
     $tags = [ordered]@{
+        "Name"         = $resource.Name
         "Project"      = $projectName
         "Environment"  = $environment
-        "ObjectType"   = $objectType     
+        "ObjectType"   = $resourceObjectMap[($resource.ResourceType, $resource.kind -join "/")]   
         "Owner"        = $projectOwner
         "Contact"      = $primaryContact
         "Region"       = $resource.Location
         "Department"   = $department
         "Created By"   = $createdBy
         "ResourceType" = $resource.ResourceType
+        "Creation Date" = $resource.Properties.creationDate
     }
-    
-    $tags
-    exit 0
 
+    $tags.GetEnumerator() | Format-Table -HideTableHeaders | out-file -FilePath "c:\users\jgange\Projects\PowerShell\ManageAzureResourceTags\taglist.txt" -Append
+    
+    <#
     if ($debugMode -eq "True") {
         try {
             Write-Host "Adding tags"
@@ -113,21 +113,17 @@ function assignTags($resource)
             processError
         }
     }
-
+   #>
 }
 
 Set-Item Env:\SuppressAzurePowerShellBreakingChangeWarnings "true"  # This suppresses the breaking change warnings
 
-# $null = Connect-AzAccount -WarningAction Ignore
+$null = Connect-AzAccount -WarningAction Ignore
 
-# Set-AzContext -Subscription $subscriptionName
+getResourceTypeMappings $resourceMapFileName
 
 $resourceTypes = (generateTaggableResourceList $masterResourceTagFile).resourceType
 
-$resourceList = returnResourceList $subscriptionName $resourceGroupName
+$resourceList  = returnResourceList $subscriptionName $resourceGroupName
 
-$resourceList | Where-Object { $_.ResourceType -in $resourceTypes } | Select-Object -Property Name,ResourceType
-
-exit 0
-
-$resourceList | ForEach-Object { assignTags $_ }
+$resourceList | Where-Object { $_.ResourceType -in $resourceTypes } | ForEach-Object { assignTags $_ }

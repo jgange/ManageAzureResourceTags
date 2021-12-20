@@ -1,16 +1,18 @@
 ﻿resourceType,objectType
-Microsoft.Web/serverFarms,App Service plan
-Microsoft.OperationsManagement/solutions,Solution
-Microsoft.AppConfiguration/configurationStores,App Configuration
-Microsoft.ContainerRegistry/registries,Container registry
-microsoft.insights/components,Application Insights
-Microsoft.ContainerService/managedClusters,Kubernetes service
-Microsoft.DocumentDb/databaseAccounts,Azure Cosmos DB account
-microsoft.insights/components,Function App
-Microsoft.Web/sites,Application Insights
-Microsoft.KeyVault/vaults,Key vault
-Microsoft.Web/sites,Logic App (Standard)
-Microsoft.OperationalInsights/workspaces,Log Analytics workspace
-Microsoft.Cache/Redis,Azure Cache for Redis
-Microsoft.Storage/storageAccounts,Storage account
-Microsoft.ServiceBus/namespaces,Service Bus Namespace
+microsoft.insights/actionGroups/,Application Insights action group
+Microsoft.Web/serverfarms/functionapp,Azure Function App
+Microsoft.OperationsManagement/solutions/,Container Insights
+Microsoft.AppConfiguration/configurationStores/,App Config
+Microsoft.ContainerRegistry/registries/,Container registry
+microsoft.insights/components/web,Application Insights
+Microsoft.ContainerService/managedClusters/,Azure Kubernetes service
+Microsoft.Web/serverfarms/elastic,App Service plan
+Microsoft.DocumentDB/databaseAccounts/GlobalDocumentDB,Azure Cosmos DB
+Microsoft.Web/sites/functionapp,Azure Function App
+Microsoft.KeyVault/vaults/,Key vault
+"Microsoft.Web/sites/functionapp,workflowapp",Azure Logic App
+microsoft.operationalinsights/workspaces/,Log Analytic workspace
+Microsoft.Cache/Redis/,Azure Cache for Redis
+Microsoft.Storage/storageAccounts/Storage,Azure Storage account
+Microsoft.ServiceBus/namespaces/,Service Bus Namespace
+microsoft.alertsmanagement/smartdetectoralertrules/,Application Insights Smart detection rule
