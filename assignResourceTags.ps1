@@ -56,12 +56,9 @@ function generateTaggableResourceList([string] $masterResourceTagFile)
 function returnResourceList ([string] $subscriptionName, [string]$resourceGroupName)
 {
     $null = Set-AzContext -Subscription $subscriptionName
-    # $list = (Get-AzResource -ResourceGroupName $resourceGroupName).Name
-    # $list | ForEach-Object { Get-AzResource -Name $_ -ExpandProperties | Select-Object -Property * }
     (Get-AzResource -ResourceGroupName $resourceGroupName).Name | ForEach-Object { Get-AzResource -Name $_ -ExpandProperties | Select-Object -Property * }
     
 }
-
 function processError()
 {
     $errorEntry = ("Exception: " + $Error[0].Exception), ("Category Info: " + $Error[0].CategoryInfo), ("Location: " + $Error[0].InvocationInfo.PositionMessage), ("Fully Qualified Error ID: " + $Error[0].FullyQualifiedErrorId) -join "\`n`n"
