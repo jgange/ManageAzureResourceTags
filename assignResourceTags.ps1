@@ -111,7 +111,7 @@ function assignTags($resource)
         # Try to add tags to it
         try {
             Write-Host "Adding tags"
-            New-AzTag -ResourceId $resourceId -Tag $tags
+            New-AzTag -ResourceId $resource.$ResourceId -Tag $tags
         }
         catch {
             Write-Host "Failed to add tags to resource."
