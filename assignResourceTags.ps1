@@ -95,6 +95,11 @@ function assignTags($resource)
         "Creation Date" = $creationDate
     }
 
+    if ($tags["ObjectType"] -eq $null) {
+        Write-Host "Object Type is missing, $($resource.ResourceType), $($resource.kind)"
+        processError
+    }
+
     if ($debugMode -eq "True") {
 
         $tags.GetEnumerator() | Format-Table -HideTableHeaders | out-file -FilePath ($scriptPath, "taglist.txt" -join "\") -Append
