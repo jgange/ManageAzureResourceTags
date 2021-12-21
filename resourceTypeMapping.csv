@@ -14,5 +14,21 @@ Microsoft.KeyVault/vaults/,Key vault
 microsoft.operationalinsights/workspaces/,Log Analytic workspace
 Microsoft.Cache/Redis/,Azure Cache for Redis
 Microsoft.Storage/storageAccounts/Storage,Azure Storage account
+Microsoft.Storage/storageAccounts/StorageV2,Azure Storage account
 Microsoft.ServiceBus/namespaces/,Service Bus Namespace
 microsoft.alertsmanagement/smartdetectoralertrules/,Application Insights Smart detection rule
+Microsoft.Compute/virtualMachineScaleSets,Virtual machine scale set
+Microsoft.ManagedIdentity/userAssignedIdentities,Managed Identity
+Microsoft.Network/applicationGateways,Application gateway
+Microsoft.Network/loadBalancers,Load balancer
+Microsoft.Network/networkSecurityGroups,Network security group
+Microsoft.Network/publicIPAddresses,Public IP address
+Microsoft.Network/virtualNetworks,Virtual network
+Microsoft.Compute/disks,Disk
+Microsoft.Compute/sshPublicKeys,SSH key
+Microsoft.Compute/virtualMachines,Virtual machine
+Microsoft.Network/networkInterfaces,Network interface
+Microsoft.Sql/servers/v12.0,SQL server
+"Microsoft.Sql/servers/databases/v12.0,user,vcore,pool",SQL database
+"Microsoft.Sql/servers/elasticPools/vcore,pool",SQL elastic pool
+Microsoft.Storage/storageAccounts/StorageV2,Storage account

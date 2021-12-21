@@ -34,12 +34,15 @@ param (
     $logFilePath           = ($scriptPath, "ManageAzureResourceTags.log" -join "\"),
 
     [string]
-    $resourceMapFileName   = "c:\users\jgange\Projects\PowerShell\ManageAzureResourceTags\resourceTypeMapping.csv"
+    $resourceMapFileName   = ($scriptPath, "resourceTypeMapping.csv" -join "\"),
+
+    [string]
+    $debugMode             = "False"
 
 )
 
 $resourceList      = [System.Collections.ArrayList]@()
-$tempFile          = $ENV:USERPROFILE,"tempFile.csv" -join "\"
+$tempFile          = $scriptPath,"tempFile.csv" -join "\"                        # file which holds the master list of taggable Azure resources
 $resourceObjectMap = [ordered]@{}
 
 function getResourceTypeMappings([string] $resourceMapFileName)
@@ -92,9 +95,10 @@ function assignTags($resource)
         "Creation Date" = $creationDate
     }
 
-    $tags.GetEnumerator() | Format-Table -HideTableHeaders | out-file -FilePath ($scriptPath, "taglist.txt" -join "\") -Append
-    
     if ($debugMode -eq "True") {
+
+        $tags.GetEnumerator() | Format-Table -HideTableHeaders | out-file -FilePath ($scriptPath, "taglist.txt" -join "\") -Append
+
         try {
             Write-Host "Adding tags"
             $tags.Keys | ForEach-Object {
@@ -124,7 +128,7 @@ function assignTags($resource)
 
 Set-Item Env:\SuppressAzurePowerShellBreakingChangeWarnings "true"  # This suppresses the breaking change warnings
 
-$null = Connect-AzAccount -WarningAction Ignore
+$null = Connect-AzAccount -WarningAction Ignore                     # Suppress the output from the Azure connection
 
 getResourceTypeMappings $resourceMapFileName
 
