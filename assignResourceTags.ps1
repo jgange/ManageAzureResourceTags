@@ -76,6 +76,7 @@ function assignTags($resource)
 
     if ($resource.Properties.creationDate) { $creationDate = $resource.Properties.creationDate }
     if ($resource.Properties.createdDate) { $creationDate = $resource.Properties.createdDate }
+    if (!($creationDate)) { $creationDate = 'n/a'}
 
     $tags = [ordered]@{
         "Name"         =  $resource.Name
@@ -111,7 +112,7 @@ function assignTags($resource)
         # Try to add tags to it
         try {
             Write-Host "Adding tags"
-            New-AzTag -ResourceId $resource.$ResourceId -Tag $tags
+            New-AzTag -ResourceId $resource.ResourceId -Tag $tags
         }
         catch {
             Write-Host "Failed to add tags to resource."
