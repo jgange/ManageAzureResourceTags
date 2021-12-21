@@ -28,14 +28,19 @@ param (
     $masterResourceTagFile = "https://raw.githubusercontent.com/tfitzmac/resource-capabilities/master/tag-support.csv",
 
     [string]
-    $resourceMapFileName  = "c:\users\jgange\Projects\PowerShell\ManageAzureResourceTags\resourceTypeMapping.csv"
+    $scriptPath            = ($env:USERPROFILE,"Projects\PowerShell\ManageAzureResourceTags" -join "\"),
+
+    [string]
+    $logFilePath           = ($scriptPath, "ManageAzureResourceTags.log" -join "\"),
+
+    [string]
+    $resourceMapFileName   = "c:\users\jgange\Projects\PowerShell\ManageAzureResourceTags\resourceTypeMapping.csv"
+
 )
 
 $resourceList      = [System.Collections.ArrayList]@()
 $tempFile          = $ENV:USERPROFILE,"tempFile.csv" -join "\"
 $resourceObjectMap = [ordered]@{}
-
-#$objectTypes = [ordered]@{}
 
 function getResourceTypeMappings([string] $resourceMapFileName)
 {
@@ -57,10 +62,20 @@ function returnResourceList ([string] $subscriptionName, [string]$resourceGroupN
     
 }
 
+function processError()
+{
+    $errorEntry = ("Exception: " + $Error[0].Exception), ("Category Info: " + $Error[0].CategoryInfo), ("Location: " + $Error[0].InvocationInfo.PositionMessage), ("Fully Qualified Error ID: " + $Error[0].FullyQualifiedErrorId) -join "\`n`n"
+    createLogEntry $errorEntry $logFilePath "Error"
+    Stop-Transcript
+    Exit 1
+}
+function createLogEntry([string] $logEntry, [string]$logFilePath, [string]$entryType)
+{
+    (Get-Date -Format "MM/dd/yyyy HH:mm K"),$entryType,$logEntry -join "**" | Out-File $logFilePath -Append
+}
+
 function assignTags($resource)
 {  
-
-    # -match "^creat.*Date"
 
     if ($resource.Properties.creationDate) { $creationDate = $resource.Properties.creationDate }
     if ($resource.Properties.createdDate) { $creationDate = $resource.Properties.createdDate }
@@ -79,9 +94,8 @@ function assignTags($resource)
         "Creation Date" = $creationDate
     }
 
-    $tags.GetEnumerator() | Format-Table -HideTableHeaders | out-file -FilePath "c:\users\jgange\Projects\PowerShell\ManageAzureResourceTags\taglist.txt" -Append
+    $tags.GetEnumerator() | Format-Table -HideTableHeaders | out-file -FilePath ($scriptPath, "taglist.txt" -join "\") -Append
     
-    <#
     if ($debugMode -eq "True") {
         try {
             Write-Host "Adding tags"
@@ -97,17 +111,6 @@ function assignTags($resource)
     }
     else
     {
-        # Make sure the resource exists
-        try {
-            if ($type -eq 'Resource Group') { $resource = Get-AzResourceGroup -Id $resourceId -ErrorAction Stop }
-            else { $resource = Get-AzResource -ResourceId $resourceId -ErrorAction Stop }
-        }
-        catch
-        {
-            Write-Host "Failed to look up resource."
-            processError
-        }
-
         # Try to add tags to it
         try {
             Write-Host "Adding tags"
@@ -118,7 +121,7 @@ function assignTags($resource)
             processError
         }
     }
-   #>
+
 }
 
 Set-Item Env:\SuppressAzurePowerShellBreakingChangeWarnings "true"  # This suppresses the breaking change warnings
