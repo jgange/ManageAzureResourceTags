@@ -40,7 +40,7 @@ param (
     $debugMode             = "False",
 
     [string]
-    $transcriptFile        = "Transcript.txt"
+    $transcriptFile        = ($subscriptionName,$resourceGroupName,"Transcript.txt" -join "_")
 
 )
 
