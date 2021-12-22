@@ -22,7 +22,7 @@ param (
     $subscriptionName      = "Pod-Dev",
 
     [string]
-    $resourceGroupName     = "d-pod-rg",
+    $resourceGroupName     = "MC_d-pod-rg_d-pod-aks_eastus2",
 
     [string]
     $masterResourceTagFile = "https://raw.githubusercontent.com/tfitzmac/resource-capabilities/master/tag-support.csv",
@@ -37,7 +37,10 @@ param (
     $resourceMapFileName   = ($scriptPath, "resourceTypeMapping.csv" -join "\"),
 
     [string]
-    $debugMode             = "False"
+    $debugMode             = "False",
+
+    [string]
+    $transcriptFile        = "Transcript.txt"
 
 )
 
@@ -95,7 +98,7 @@ function assignTags($resource)
         "Creation Date" = $creationDate
     }
 
-    if ($tags["ObjectType"] -eq $null) {
+    if (!($tags["ObjectType"])) {
         Write-Host "Object Type is missing, $($resource.ResourceType), $($resource.kind)"
         processError
     }
@@ -135,10 +138,22 @@ Set-Item Env:\SuppressAzurePowerShellBreakingChangeWarnings "true"  # This suppr
 
 $null = Connect-AzAccount -WarningAction Ignore                     # Suppress the output from the Azure connection
 
+Start-Transcript -Path ($scriptPath, $transcriptFile -join "\")
+
+Write-host "Grab a copy of the master list of taggable resources and store it locally."
+
 getResourceTypeMappings $resourceMapFileName
+
+Write-host "Filter the list to include only the resource types which support tags."
 
 $resourceTypes = (generateTaggableResourceList $masterResourceTagFile).resourceType
 
+Write-host "Get the list of resources included in the $subscriptionName subscription and the  $resourceGroupName resource group."
+
 $resourceList  = returnResourceList $subscriptionName $resourceGroupName
 
+Write-Host "Filter the list to include the resources which support tags and apply tags."
+
 $resourceList | Where-Object { $_.ResourceType -in $resourceTypes } | ForEach-Object { assignTags $_ }
+
+Stop-Transcript
