@@ -148,7 +148,7 @@ Write-host "Filter the list to include only the resource types which support tag
 
 $resourceTypes = (generateTaggableResourceList $masterResourceTagFile).resourceType
 
-Write-host "Get the list of resources included in the $subscriptionName subscription and the  $resourceGroupName resource group."
+Write-host "Get the list of resources included in the $subscriptionName subscription and the $resourceGroupName resource group."
 
 $resourceList  = returnResourceList $subscriptionName $resourceGroupName
 
