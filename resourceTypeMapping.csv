@@ -31,3 +31,4 @@ Microsoft.Network/networkInterfaces/,Network interface
 Microsoft.Sql/servers/v12.0,SQL server
 "Microsoft.Sql/servers/databases/v12.0,user,vcore,pool",SQL database
 "Microsoft.Sql/servers/elasticPools/vcore,pool",SQL elastic pool
+Microsoft.Network/networkWatchers/,Network Watcher
